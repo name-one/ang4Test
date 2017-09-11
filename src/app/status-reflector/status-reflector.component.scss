@@ -1,3 +1,4 @@
+@import '../_variables';
 .status-reflector{
   height: 100vh;
   background-color: #212121;
@@ -10,11 +11,17 @@
     color: #fff;
     text-align: center;
     text-transform: uppercase;
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     margin-bottom: 10px;
   }
   &__body{
-    height: calc(100vh - (30px + 1.5rem));
+    height: calc(100vh - (30px + 1.2rem));
     background-color: #9E9E9E;
+    padding: 10px;
   }
+}
+.notification{
+  font-family: $terminal-font;
+  font-size: 18px;
+  color: #B71C1C;
 }

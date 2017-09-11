@@ -8,15 +8,13 @@ import { DataService } from './data.service';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'app';
+  public sendError;
+
   constructor(private dataService: DataService){}
-  public go():void{
+  go():void{
+    let context = this;
     this.dataService.getCommand().subscribe( (resp)=>{
       let response = resp.json();
-      /* check errors */
-        if(response.warnings.length || response.errors.length){
-          /* check err */
-        }else{
           /* parse command */
           console.log(response)
           switch(response.payload.command){
@@ -29,21 +27,37 @@ export class AppComponent {
             case 'request_element':
               this.requestelEment();
               break;
-          }
           /* parse command */
         }
       /* check errors */
 
-    });
+    },
+    err=>{
+      this.handleError(err)
+    }
+  );
   }
-  public requestLink():void{
+  requestLink():void{
     this.dataService.requestLink().subscribe(resp=>{
       console.log(resp)
+    },
+    err=>{
+      this.handleError(err)
     })
   }
-  public requestelEment():void{
+  requestelEment():void{
     this.dataService.requestElement().subscribe(resp=>{
       console.log(resp)
+    },
+    err=>{
+      this.handleError(err)
     })
+  }
+  handleError(err){
+    let error = err.json();
+    this.sendError = error.errors;
+  }
+  handleWarning(){
+    
   }
 }

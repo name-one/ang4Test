@@ -1,6 +1,8 @@
 <div class="status-reflector">
   <h2 class="status-reflector__title">Status</h2>
   <div class="status-reflector__body">
-    
+    <p class="notification" *ngFor="let notification of notifications" class="notification" [class.notification_err]="notification.type == 0 ">
+      {{notification.message}}
+    </p>
   </div>
 </div>

@@ -8,12 +8,17 @@ import { DataService } from './data.service';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  public sendError;
+  sendError;
+  sendWarning;
 
   constructor(private dataService: DataService){}
   go():void{
     let context = this;
     this.dataService.getCommand().subscribe( (resp)=>{
+      /* check Warnings */
+        this.handleWarning(resp);
+      /* check Warnings */
+
       let response = resp.json();
           /* parse command */
           console.log(response)
@@ -39,6 +44,9 @@ export class AppComponent {
   }
   requestLink():void{
     this.dataService.requestLink().subscribe(resp=>{
+      /* check Warnings */
+        this.handleWarning(resp);
+      /* check Warnings */
       console.log(resp)
     },
     err=>{
@@ -47,6 +55,9 @@ export class AppComponent {
   }
   requestelEment():void{
     this.dataService.requestElement().subscribe(resp=>{
+      /* check Warnings */
+        this.handleWarning(resp);
+      /* check Warnings */
       console.log(resp)
     },
     err=>{
@@ -57,7 +68,14 @@ export class AppComponent {
     let error = err.json();
     this.sendError = error.errors;
   }
-  handleWarning(){
-    
+  handleWarning(resp):boolean{
+    let response = resp.json();
+    let warnings;
+    if(response.warnings.length){
+      this.sendWarning = response.warnings;
+      return true
+    }else{
+      return false
+    }
   }
 }

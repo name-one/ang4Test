@@ -23,5 +23,10 @@
 .notification{
   font-family: $terminal-font;
   font-size: 18px;
-  color: #B71C1C;
+  &_err{
+    color: #B71C1C;
+  }
+  &_war{
+    color: #FFEE58;
+  }
 }

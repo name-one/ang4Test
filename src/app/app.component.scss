@@ -1,0 +1,11 @@
+.main-scr{
+  width: calc(100% - 320px);
+}
+.controll{
+  padding: 20px;
+  height: 80px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}

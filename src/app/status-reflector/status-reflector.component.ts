@@ -26,7 +26,7 @@ export class StatusReflectorComponent implements OnInit, OnChanges {
   }
   addError(errorCode){
     let message= 'Error: ';
-    this.responseCode[errorCode] ? message += ResponseCode[errorCode] : message += 'uncaught error!'
+    this.responseCode[errorCode] ? message += ResponseCode[errorCode] : message += 'unknown error!'
     let errNotification = new Notification(notificationType.Error, message)
     this.notifications.push(errNotification);
   }

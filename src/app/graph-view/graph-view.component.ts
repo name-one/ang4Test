@@ -2,6 +2,7 @@ import { Component, OnInit, OnChanges, Input, Output, EventEmitter } from '@angu
 import * as cytoscape from "cytoscape";
 
 import { DataService } from '../data.service';
+import { Action } from '../models/action';
 
 @Component({
   selector: 'app-graph-view',
@@ -14,6 +15,8 @@ export class GraphViewComponent implements OnInit, OnChanges {
     emitError: EventEmitter<object[]> = new EventEmitter<object[]>();
   @Input()
   newId: number;
+  @Input()
+    inputAction: Action;
   nodesId: number[] = [];
   constructor(private dataService: DataService) { }
   ngOnInit() {
@@ -55,6 +58,47 @@ export class GraphViewComponent implements OnInit, OnChanges {
     })
 
   }
+  bindNodes(src: number, dst: number){
+    /* check existing of nodes*/
+      let from = this.nodesId.find( item=>{
+        return item == src;
+      });
+      let to = this.nodesId.find( item=>{
+        return item == dst;
+      });
+      if(!from && !to){
+        let newErr = [{
+          code: `Error: can't bind nodes reason: node:${src} and node ${dst} doesn't exit`,
+          internal: true
+        }]
+        this.emitError.emit(newErr);
+        return false
+      }else if(!to){
+        let newErr = [{
+          code: `Error: can't bind nodes reason: node:${dst} doesn't exit`,
+          internal: true
+        }]
+        this.emitError.emit(newErr);
+        return false
+      }else if(!from){
+        let newErr = [{
+          code: `Error: can't bind nodes reason: node:${src} doesn't exit`,
+          internal: true
+        }]
+        this.emitError.emit(newErr);
+        return false;
+      }
+    /* check existing of nodes*/
+    let id = `${src}-${dst}`;
+    this.graph.add({
+      group: 'edges',
+      data: {
+        id: id,
+        source: src,
+        target: dst
+      }
+    })
+  }
   ngOnChanges(changes){
     if(changes.newId){
       let startPosPoint = changes.newId.currentValue*30+30;
@@ -63,22 +107,33 @@ export class GraphViewComponent implements OnInit, OnChanges {
           let flag = this.nodesId.find( item=>{
             return item == changes.newId.currentValue;
           })
-          if(flag){
+          if(typeof flag == 'number'){
             let newErr = [{
               code: `Error: node with id:${changes.newId.currentValue} already exist!`,
               internal: true
             }]
             this.emitError.emit(newErr)
+          }else{
+            this.nodesId.push(changes.newId.currentValue)
+            this.graph.add({
+              group: 'nodes',
+              data: { id: changes.newId.currentValue },
+              position: { x: startPosPoint, y: startPosPoint }
+            })
           }
         /*check new node in saved nodes */
-        this.nodesId.push(changes.newId.currentValue)
-        this.graph.add({
-          group: 'nodes',
-          data: { id: changes.newId.currentValue },
-          position: { x: startPosPoint, y: startPosPoint }
-        })
+
+
       }
 
+    }
+    if(changes.inputAction){
+      if(!changes.inputAction.currentValue){
+        return false
+      }
+      if(changes.inputAction.currentValue.type && changes.inputAction.currentValue.type == 'bind'){
+        this.bindNodes(changes.inputAction.currentValue.src, changes.inputAction.currentValue.dst)
+      }
     }
   }
 }

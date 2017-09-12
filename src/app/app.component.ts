@@ -1,6 +1,7 @@
 import { Component, EventEmitter } from '@angular/core';
 
 import { DataService } from './data.service';
+import { Action } from './models/action';
 
 @Component({
   selector: 'app-root',
@@ -12,6 +13,7 @@ export class AppComponent {
   sendWarning;
   success: number;
   newNode: number;
+  action: Action;
   constructor(private dataService: DataService){}
   go():void{
     let context = this;
@@ -59,7 +61,7 @@ export class AppComponent {
       let response = resp.json();
         switch(response.payload.action){
           case 'bind':
-          console.log('bind')
+            this.bindNodes(response.payload.src, response.payload.dst)
             break;
         }
       /* parse actions */
@@ -84,6 +86,9 @@ export class AppComponent {
       this.handleError(err)
     })
   }
+  bindNodes(src: number, dst:number){
+    this.action = new Action('bind', src, dst);
+  };
   handleError(err){
     if( err[0] && err[0].internal ){ //check type of error
       this.sendError = err

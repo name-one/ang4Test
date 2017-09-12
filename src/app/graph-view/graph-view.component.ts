@@ -65,7 +65,7 @@ export class GraphViewComponent implements OnInit, OnChanges {
           })
           if(flag){
             let newErr = [{
-              code: `Error: node with id:${changes.newId.currentValue} already exist`,
+              code: `Error: node with id:${changes.newId.currentValue} already exist!`,
               internal: true
             }]
             this.emitError.emit(newErr)

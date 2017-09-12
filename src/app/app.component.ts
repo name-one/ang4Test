@@ -40,7 +40,6 @@ export class AppComponent {
           /* parse command */
         }
       /* check errors */
-
     },
     err=>{
       this.handleError(err)
@@ -55,7 +54,15 @@ export class AppComponent {
         this.handleSuccess();
       }
       /* check Warnings */
-      console.log(resp)
+
+      /* parse actions */
+      let response = resp.json();
+        switch(response.payload.action){
+          case 'bind':
+          console.log('bind')
+            break;
+        }
+      /* parse actions */
     },
     err=>{
       this.handleError(err)
@@ -78,9 +85,6 @@ export class AppComponent {
     })
   }
   handleError(err){
-    /*
-      still not working!!!!!!!!!!!!!!!
-    */
     if( err[0] && err[0].internal ){ //check type of error
       this.sendError = err
     }else{

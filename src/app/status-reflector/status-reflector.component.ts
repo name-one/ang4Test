@@ -24,7 +24,7 @@ export class StatusReflectorComponent implements OnInit, OnChanges {
   ngOnChanges(changes){
     if(changes.errors && this.errors != undefined){
         changes.errors.currentValue.forEach(item=>{
-          changes.errors.currentValue.internal?true: this.addError(item.code, true);
+          item.internal ? this.addError(item.code) : this.addError(item.code, true);
         })
 
     }

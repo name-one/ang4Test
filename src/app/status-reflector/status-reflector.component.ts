@@ -52,4 +52,7 @@ export class StatusReflectorComponent implements OnInit, OnChanges {
     let successNotification = new Notification(notificationType.Success, 'Happy request!');
     this.notifications.push(successNotification);
   }
+  clear(){
+    this.notifications = [];
+  }
 }

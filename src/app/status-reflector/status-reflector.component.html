@@ -1,5 +1,8 @@
 <div class="status-reflector">
-  <h2 class="status-reflector__title">Status</h2>
+  <div class="status-reflector__header">
+    <h2 class="status-reflector__title">Status</h2>
+    <button class='button status-reflector__clear' (click)='clear()'>clear</button>
+  </div>
   <div class="status-reflector__body">
     <p class="notification" *ngFor="let notification of notifications" class="notification" [ngClass]="{'notification_err': notification.type == 0, 'notification_war': notification.type == 1, 'notification_suc': notification.type == 3}">
       {{notification.message}}

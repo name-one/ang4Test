@@ -4,7 +4,6 @@ export class Notification {
 export enum notificationType{
   Error = 0,
   Warning = 1,
-  Messege = 2,
-  Succes = 3
-
+  Message = 2,
+  Success = 3
 }

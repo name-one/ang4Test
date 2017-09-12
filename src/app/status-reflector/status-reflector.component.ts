@@ -14,10 +14,12 @@ export class StatusReflectorComponent implements OnInit, OnChanges {
   errors;
   @Input()
   warnings;
+  @Input()
+  newSuccess
   notifications: Notification[] = [];
   responseCode = ResponseCode
   ngOnInit() {
-    console.log(ResponseCode)
+
   }
   ngOnChanges(changes){
     if(changes.errors && this.errors != undefined){
@@ -26,10 +28,12 @@ export class StatusReflectorComponent implements OnInit, OnChanges {
       })
     }
     else if(changes.warnings && this.warnings != undefined){
-      console.log('warning')
       changes.warnings.currentValue.forEach(item=>{
         this.addWarning(item.code)
       })
+    }
+    else if(changes.newSuccess.currentValue){
+      this.addSuccess()
     }
   }
   addError(errorCode){
@@ -43,5 +47,9 @@ export class StatusReflectorComponent implements OnInit, OnChanges {
     this.responseCode[warningCode] ? message += ResponseCode[warningCode] : message += 'unknown warning!';
     let errNotification = new Notification(notificationType.Warning, message);
     this.notifications.push(errNotification);
+  }
+  addSuccess(){
+    let successNotification = new Notification(notificationType.Success, 'Happy request!');
+    this.notifications.push(successNotification);
   }
 }

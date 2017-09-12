@@ -33,7 +33,7 @@ export class DataService {
     }
     let auth = `Basic ${base64}`
     return new RequestOptions({
-      headers: new Headers({"Authorization": auth})
+      headers: new Headers({"Authorization": auth, "Content-Type": "application/json"})
     })
   }
   private get(url: string){

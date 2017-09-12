@@ -18,6 +18,7 @@
     height: calc(100vh - (30px + 1.2rem));
     background-color: #9E9E9E;
     padding: 10px;
+    overflow-y: auto;
   }
 }
 .notification{
@@ -28,5 +29,8 @@
   }
   &_war{
     color: #FFEE58;
+  }
+  &_suc{
+    color: #2E7D32;
   }
 }

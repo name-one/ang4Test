@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter } from '@angular/core';
 
 import { DataService } from './data.service';
 
@@ -10,13 +10,17 @@ import { DataService } from './data.service';
 export class AppComponent {
   sendError;
   sendWarning;
-
+  success: number;
   constructor(private dataService: DataService){}
   go():void{
     let context = this;
     this.dataService.getCommand().subscribe( (resp)=>{
       /* check Warnings */
-        this.handleWarning(resp);
+      let warningFlag =  this.handleWarning(resp);
+      if(!warningFlag){
+        this.handleSuccess()
+      }
+
       /* check Warnings */
 
       let response = resp.json();
@@ -45,7 +49,10 @@ export class AppComponent {
   requestLink():void{
     this.dataService.requestLink().subscribe(resp=>{
       /* check Warnings */
-        this.handleWarning(resp);
+      let warningFlag =  this.handleWarning(resp);
+      if(!warningFlag){
+        this.handleSuccess();
+      }
       /* check Warnings */
       console.log(resp)
     },
@@ -56,7 +63,10 @@ export class AppComponent {
   requestelEment():void{
     this.dataService.requestElement().subscribe(resp=>{
       /* check Warnings */
-        this.handleWarning(resp);
+        let warningFlag = this.handleWarning(resp);
+        if(!warningFlag){
+          this.handleSuccess();
+        }
       /* check Warnings */
       console.log(resp)
     },
@@ -77,5 +87,8 @@ export class AppComponent {
     }else{
       return false
     }
+  }
+  handleSuccess(){
+    this.success = Date.now() //just change value to changes
   }
 }

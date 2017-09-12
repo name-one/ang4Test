@@ -23,9 +23,10 @@ export class StatusReflectorComponent implements OnInit, OnChanges {
   }
   ngOnChanges(changes){
     if(changes.errors && this.errors != undefined){
-      changes.errors.currentValue.forEach(item=>{
-        this.addError(item.code)
-      })
+        changes.errors.currentValue.forEach(item=>{
+          changes.errors.currentValue.internal?true: this.addError(item.code, true);
+        })
+
     }
     else if(changes.warnings && this.warnings != undefined){
       changes.warnings.currentValue.forEach(item=>{
@@ -36,11 +37,16 @@ export class StatusReflectorComponent implements OnInit, OnChanges {
       this.addSuccess()
     }
   }
-  addError(errorCode){
-    let message= 'Error: ';
-    this.responseCode[errorCode] ? message += ResponseCode[errorCode] : message += 'unknown error!';
-    let errNotification = new Notification(notificationType.Error, message);
-    this.notifications.push(errNotification);
+  addError(errorCode:string, fromApi?: boolean){
+    if(fromApi){
+      let message= 'Error: ';
+      this.responseCode[errorCode] ? message += ResponseCode[errorCode] : message += 'unknown error!';
+      let errNotification = new Notification(notificationType.Error, message);
+      this.notifications.push(errNotification);
+    }else{
+      let errNotification = new Notification(notificationType.Error, errorCode);
+      this.notifications.push(errNotification);
+    }
   }
   addWarning(warningCode){
     let message= 'Warning: ';

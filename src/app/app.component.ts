@@ -11,6 +11,7 @@ export class AppComponent {
   sendError;
   sendWarning;
   success: number;
+  newNode: number;
   constructor(private dataService: DataService){}
   go():void{
     let context = this;
@@ -34,7 +35,7 @@ export class AppComponent {
               this.requestLink()
               break;
             case 'request_element':
-              this.requestelEment();
+              this.requestElement();
               break;
           /* parse command */
         }
@@ -60,7 +61,7 @@ export class AppComponent {
       this.handleError(err)
     })
   }
-  requestelEment():void{
+  requestElement():void{
     this.dataService.requestElement().subscribe(resp=>{
       /* check Warnings */
         let warningFlag = this.handleWarning(resp);
@@ -68,15 +69,25 @@ export class AppComponent {
           this.handleSuccess();
         }
       /* check Warnings */
-      console.log(resp)
+      let response = resp.json();
+      this.newNode = response.payload.id
+
     },
     err=>{
       this.handleError(err)
     })
   }
   handleError(err){
-    let error = err.json();
-    this.sendError = error.errors;
+    /*
+      still not working!!!!!!!!!!!!!!!
+    */
+    if( err[0] && err[0].internal ){ //check type of error
+      this.sendError = err
+    }else{
+      let error = err.json();
+      this.sendError = error.errors;
+    }
+
   }
   handleWarning(resp):boolean{
     let response = resp.json();

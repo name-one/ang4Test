@@ -15,7 +15,7 @@ import { GraphViewComponent } from './graph-view/graph-view.component';
   ],
   imports: [
     BrowserModule,
-    HttpModule
+    HttpModule,
   ],
   providers: [
     DataService

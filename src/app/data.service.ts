@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 import { Http, RequestOptions, Headers} from '@angular/http';
 
-import { environment } from '../environments/environment'
+import { environment } from '../environments/environment';
+import {Observable} from 'rxjs/Observable';
 
 @Injectable()
 export class DataService {
-
+  nodeId: number;
   constructor( private http: Http) { }
-
   public getCommand(){
     return this.get('command')
   }

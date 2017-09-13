@@ -23,6 +23,7 @@ export class GraphViewComponent implements OnInit, OnChanges {
   edgesId: string[] = [];
   edges: any[] = [];
   connectedNodes: string;
+  layout;
   constructor(private dataService: DataService) { }
   ngOnInit() {
     this.graph = cytoscape({
@@ -56,7 +57,9 @@ export class GraphViewComponent implements OnInit, OnChanges {
       }
 
     });
-
+    this.layout = this.graph.layout({
+        name: 'random',
+    })
     this.graph.on('click', 'node', (e)=>{
       var node = e.target;
       let edges = node.connectedEdges()
@@ -227,7 +230,8 @@ export class GraphViewComponent implements OnInit, OnChanges {
   }
   ngOnChanges(changes){
     if(changes.newId){
-      let startPosPoint = changes.newId.currentValue*30+30;
+      let startPosPoint = changes.newId.currentValue*30+40;
+      let startPosPointX = Math.floor((Math.random()*171)+200);
       if(this.graph){
         /*check new node in saved nodes */
           let flag = this.nodesId.find( item=>{
@@ -244,9 +248,18 @@ export class GraphViewComponent implements OnInit, OnChanges {
             this.graph.add({
               group: 'nodes',
               data: { id: changes.newId.currentValue },
-              position: { x: startPosPoint, y: startPosPoint }
+              // position: { x: startPosPointX, y: startPosPoint }
             })
-            this.createMessage(`Node with id:${changes.newId.currentValue} was created`)
+
+            this.createMessage(`Node with id:${changes.newId.currentValue} was created`);
+            let count = this.nodesId.length;
+            this.graph.nodes().positions(function( node, i ){
+                return {
+                  x: 400 + Math.sin(6.28 * i / count) * 200,
+                  y: 400 + Math.cos(6.28 * i / count) * 200,
+                };
+              });
+              this.graph.forceRender();
           }
         /*check new node in saved nodes */
 

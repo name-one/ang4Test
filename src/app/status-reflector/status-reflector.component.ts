@@ -15,13 +15,16 @@ export class StatusReflectorComponent implements OnInit, OnChanges {
   @Input()
   warnings;
   @Input()
-  newSuccess
+  newSuccess;
+  @Input()
+  inputMessage;
   notifications: Notification[] = [];
   responseCode = ResponseCode
   ngOnInit() {
 
   }
   ngOnChanges(changes){
+    console.log(changes)
     if(changes.errors && this.errors != undefined){
         changes.errors.currentValue.forEach(item=>{
           item.internal ? this.addError(item.code) : this.addError(item.code, true);
@@ -33,8 +36,12 @@ export class StatusReflectorComponent implements OnInit, OnChanges {
         this.addWarning(item.code)
       })
     }
-    else if(changes.newSuccess.currentValue){
+    else if(changes.newSuccess){
       this.addSuccess()
+    }else if(changes.inputMessage && this.inputMessage != undefined){
+      changes.inputMessage.currentValue.forEach( item=>{
+        this.addMessage(item.code)
+      })
     }
   }
   addError(errorCode:string, fromApi?: boolean){
@@ -60,5 +67,9 @@ export class StatusReflectorComponent implements OnInit, OnChanges {
   }
   clear(){
     this.notifications = [];
+  }
+  addMessage(message: string){
+    let messageNotification = new Notification( notificationType.Message, message)
+    this.notifications.push(messageNotification);
   }
 }

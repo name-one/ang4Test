@@ -13,8 +13,10 @@ export class GraphViewComponent implements OnInit, OnChanges {
   graph: any;
   @Output()
     emitError: EventEmitter<object[]> = new EventEmitter<object[]>();
+  @Output()
+    emitMessage: EventEmitter<object> = new EventEmitter<object>();
   @Input()
-  newId: number;
+    newId: number;
   @Input()
     inputAction: Action;
   nodesId: number[] = [];
@@ -98,6 +100,7 @@ export class GraphViewComponent implements OnInit, OnChanges {
         target: dst
       }
     })
+    this.createMessage(`Was create link from ${src} to ${dst}`);
   }
   ngOnChanges(changes){
     if(changes.newId){
@@ -120,6 +123,7 @@ export class GraphViewComponent implements OnInit, OnChanges {
               data: { id: changes.newId.currentValue },
               position: { x: startPosPoint, y: startPosPoint }
             })
+            this.createMessage(`Node with id:${changes.newId.currentValue} was created`)
           }
         /*check new node in saved nodes */
 
@@ -135,5 +139,11 @@ export class GraphViewComponent implements OnInit, OnChanges {
         this.bindNodes(changes.inputAction.currentValue.src, changes.inputAction.currentValue.dst)
       }
     }
+  }
+  createMessage(message: string){
+    this.emitMessage.emit([{
+      code: message,
+      internal: true
+    }]);
   }
 }

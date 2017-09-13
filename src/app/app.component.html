@@ -1,6 +1,6 @@
-<app-status-reflector [errors]="sendError" [warnings]='sendWarning' [newSuccess]='success'></app-status-reflector>
+<app-status-reflector [errors]="sendError" [warnings]='sendWarning' [newSuccess]='success' [inputMessage]='message'></app-status-reflector>
 <div class="main-scr">
-  <app-graph-view [newId]='newNode' [inputAction]='action' (emitError)="handleError($event)"></app-graph-view>
+  <app-graph-view [newId]='newNode' [inputAction]='action' (emitError)="handleError($event)" (emitMessage)='createMessage($event)'></app-graph-view>
   <div class="controll">
     <button class='button button_go' (click)='go()'>GO</button>
   </div>

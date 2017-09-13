@@ -1,19 +1,22 @@
-import { Component, EventEmitter } from '@angular/core';
+import { Component, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 
 import { DataService } from './data.service';
 import { Action } from './models/action';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.Default,
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
   sendError;
+  message = [{ message: 'default'}]; // defalt value to fix angular isue https://github.com/angular/angular/issues/17572
   sendWarning;
   success: number;
   newNode: number;
   action: Action;
+
   constructor(private dataService: DataService){}
   go():void{
     let context = this;
@@ -63,6 +66,9 @@ export class AppComponent {
           case 'bind':
             this.bindNodes(response.payload.src, response.payload.dst)
             break;
+          case 'unbind':
+          debugger
+            break;
         }
       /* parse actions */
     },
@@ -110,5 +116,8 @@ export class AppComponent {
   }
   handleSuccess(){
     this.success = Date.now() //just change value to changes
+  }
+  createMessage(event){
+    this.message = event
   }
 }

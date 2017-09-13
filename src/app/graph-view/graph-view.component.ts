@@ -21,6 +21,8 @@ export class GraphViewComponent implements OnInit, OnChanges {
     inputAction: Action;
   nodesId: number[] = [];
   edgesId: string[] = [];
+  edges: any[] = [];
+  connectedNodes: string;
   constructor(private dataService: DataService) { }
   ngOnInit() {
     this.graph = cytoscape({
@@ -57,9 +59,68 @@ export class GraphViewComponent implements OnInit, OnChanges {
 
     this.graph.on('click', 'node', (e)=>{
       var node = e.target;
+      let edges = node.connectedEdges()
 
+      if(!edges.length){
+        this.createMessage(`this node:${node.id()} hasn't linked nodes`)
+      }else{
+        let chains = this.getAllPaths(+node.id());
+        this.createMessage(`element reacheble from ${node.id()}:`)
+        let path = chains.map( item =>{
+          let path = item.join('->');
+          return path;
+        })
+        /*pause on print*/
+          path.forEach( item =>{
+            let interval = setTimeout(()=>{
+              this.createMessage(item)
+              clearTimeout(interval)
+            },0)
+
+          })
+
+
+      }
     })
 
+  }
+
+  getAllPaths(nodeId : number) {
+      let chains : number[][] = [];
+      this.internalGetAllPaths(nodeId, [nodeId], [nodeId], this.edges, chains);
+
+      return chains;
+  }
+
+  internalGetAllPaths(nodeId : number, marked: number[], currentChain: number[],
+    edges: any[], chains: number[][]) {
+      var nodesToVisit = edges
+        .filter(e => e.from === nodeId && marked.indexOf(e.to) == -1)
+        .map(e => e.to);
+      for(let node of nodesToVisit) {
+        marked.push(node);
+        let chain = currentChain.map(_ => _);
+        chain.push(node);
+        chains.push(chain);
+        this.internalGetAllPaths(node, marked, chain, edges, chains);
+      }
+  }
+
+  reachedElement(edges){
+    if(!edges.length){
+      this.connectedNodes+= ';';
+
+      return false;
+    }else{
+      for( let i = 0 ; i<edges.length; i++){
+        let id = edges[i]._private.data.target
+        let node = this.graph.getElementById(`${i}`);
+        let innerEdges = node.connectedEdges();
+        this.connectedNodes+=`->${id}`;
+        this.reachedElement(innerEdges)
+
+      }
+    }
   }
   bindNodes(src: number, dst: number){
     /* check existing of nodes*/
@@ -69,7 +130,6 @@ export class GraphViewComponent implements OnInit, OnChanges {
       let to = this.nodesId.find( item=>{
         return item === dst;
       });
-      debugger
       if(typeof from =='undefined' && typeof to =='undefined'){
         let newErr = [{
           code: `Error: can't bind nodes reason: node:${src} and node ${dst} doesn't exit`,
@@ -111,6 +171,10 @@ export class GraphViewComponent implements OnInit, OnChanges {
       }
     })
     this.edgesId.push(id)
+    this.edges.push({
+      from: src,
+      to: dst
+    })
     this.createMessage(`Was create link from ${src} to ${dst}`); //save adge
   }
   unbindNodes(src: number, dst: number){
@@ -158,9 +222,8 @@ export class GraphViewComponent implements OnInit, OnChanges {
     /*check existing edge*/
     let indexOfId = this.graph.indexOf(id)
     this.graph.remove(("edge#"+id))
-    debugger
     this.edgesId.splice(indexOfId,0)
-    debugger
+    this.createMessage(`link from ${src} to ${dst} was unbind`);
   }
   ngOnChanges(changes){
     if(changes.newId){

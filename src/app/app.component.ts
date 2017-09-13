@@ -67,7 +67,7 @@ export class AppComponent {
             this.bindNodes(response.payload.src, response.payload.dst)
             break;
           case 'unbind':
-          debugger
+            this.unbindNodes(response.payload.src, response.payload.dst)
             break;
         }
       /* parse actions */
@@ -95,6 +95,9 @@ export class AppComponent {
   bindNodes(src: number, dst:number){
     this.action = new Action('bind', src, dst);
   };
+  unbindNodes(src: number, dst:number){
+    this.action = new Action('unBind', src, dst);
+  }
   handleError(err){
     if( err[0] && err[0].internal ){ //check type of error
       this.sendError = err
